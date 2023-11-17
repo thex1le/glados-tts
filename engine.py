@@ -1,6 +1,7 @@
 import sys
 import os
 sys.path.insert(0, os.getcwd()+'/glados_tts')
+import pathlib
 
 import torch
 from utils.tools import prepare_text
@@ -50,6 +51,7 @@ def glados_tts(text, key=False):
         print("\033[1;94mINFO:\033[;97m The audio sample took " + str(round((time.time() - old_time) * 1000)) + " ms to generate.")
 
         # Normalize audio to fit in wav-file
+        # make audo directory if it doesnt exist
         audio = audio.squeeze()
         audio = audio * 32768.0
         audio = audio.cpu().numpy().astype('int16')
@@ -57,7 +59,7 @@ def glados_tts(text, key=False):
             output_file = ('audio/GLaDOS-tts-temp-output-'+key+'.wav')
         else:
             output_file = ('audio/GLaDOS-tts-temp-output.wav')
-
+        pathlib.Path('audio/').mkdir(parents=True, exist_ok=True)
         # Write audio file to disk
         # 22,05 kHz sample rate 
         write(output_file, 22050, audio)
